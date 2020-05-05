@@ -5,11 +5,11 @@ var accessToken = '223004989-A3wvrZ3iGBTyceAceSQFUs9kFrM9pn16NIb6fAt9';
 var accessTokenSecret = '3bJ2iOl1nk9edbHsSUdayqy2AnWCBJKbyhkNZE4fPHWhY';
 
 const codeBird = new Codebird();
-let useFont;
+
+
 
 var covid19LocalizedName = [
-  "コロナウィルス"
-  // "コロナウィルス",
+  "コロナウィルス",
   // "Coronavirus",
   // "코로나바이러스감염증",
   // "коронавирусной инфекции",
@@ -25,15 +25,16 @@ let startCount;
 
 let margin = 100;
 let offset = 100;
-let tSize = 40;
+let tSize = 45;
 var startYpos = margin;
 
 let oldWord = covid19LocalizedName[0];
 
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(25);
-
+  textFont('monospace');
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
   startCount = frameCount;
@@ -48,11 +49,8 @@ function setup() {
     codeBird.__call('search_tweets', params, (result) => {
       for (let j=0; j<result.statuses.length; j++) {
         print(result.statuses[j].text);
-        let resultText = result.statuses[j].text
-        resultText = resultText.replace(new RegExp('^RT ') ,'');
-        resultText = resultText.replace(new RegExp('http.*') ,'');
         results.push(result.statuses[j].text);
-        combinedText += resultText;
+        combinedText += result.statuses[j].text;
       }
     });
   }
@@ -70,23 +68,24 @@ function draw() {
       oldWord = newWord;
     }
 
-    let charText = split(combinedText,'');
+    let charNums = unchar(split(combinedText,''));
 
-    for(let i = 0; i < charText.length; i++) {
+    for(let i = 0; i < charNums.length; i++) {
   		//culclate offset
-  		let offseti = offset + i*2 -(frameCount-startCount);
+  		let offseti = offset + i -(frameCount-startCount);
   		if (offseti > offset) {
         break;
   		}
 
   		//char parameter
   		let col = '#000000';
-      let ch = charText[i];
+  		// let ch = char(charNums[i] + offseti);
+      let ch = char(charNums[i]);
   		//draw char
   		fill(col);
   		textSize(tSize);
   		text(ch,drawPos.x,drawPos.y);
-  		drawPos.x += textWidth(charText[i]);
+  		drawPos.x += textWidth(char(charNums[i]));
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*2;
   			drawPos.x = margin;
