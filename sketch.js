@@ -5,7 +5,6 @@ var accessToken = '223004989-A3wvrZ3iGBTyceAceSQFUs9kFrM9pn16NIb6fAt9';
 var accessTokenSecret = '3bJ2iOl1nk9edbHsSUdayqy2AnWCBJKbyhkNZE4fPHWhY';
 
 const codeBird = new Codebird();
-let useFont;
 
 let covid19LocalizedName = [
   "コロナウィルス"
@@ -21,8 +20,6 @@ let covid19LocalizedName = [
 let filledKeywords = [
   "コロナ", "新型", "ウィルス", "ウイルス"
 ];
-
-var results = [];
 
 var combinedText = "";
 var charObjectOfText = [];
@@ -56,11 +53,10 @@ function setup() {
         resultText = resultText.replace(new RegExp('^RT ') ,'');
         resultText = resultText.replace(new RegExp('http.*') ,'');
         addCharObjectOfText(resultText);
-        results.push(result.statuses[j].text);
 
         combinedText += resultText;
       }
-      checkFilledKeyword();
+      checkAllFilledKeyword();
     });
   }
 }
@@ -116,12 +112,13 @@ function addCharObjectOfText(sentence) {
   }
 }
 
-function checkFilledKeyword() {
+function checkAllFilledKeyword() {
+  // 1文字ずつみていく。
   for(let charObjectIndex = 0; charObjectIndex < charObjectOfText.length; charObjectIndex++) {
     for (let p = 0; p<filledKeywords.length; p++) {
       let filledKeywordCharArray = split(filledKeywords[p],'');
 
-      //キーワードごとに該当する文字がキーワードと一致するか確認する
+      // 該当する文字がキーワードと一致するか確認する
       for (let keywordIndex = 0; keywordIndex < filledKeywordCharArray.length; keywordIndex++) {
         if (charObjectOfText[charObjectIndex+keywordIndex].isFilled) { break; }
 
@@ -130,6 +127,8 @@ function checkFilledKeyword() {
           break;
         }
 
+        // 該当する文字からキーワードの文字数分後ろまで一致するか確認し、
+        // 一致する場合、一致した文字全てにtrueを入れる
         if (filledKeywordCharArray[filledKeywordCharArray.length-1] == charObjectOfText[charObjectIndex+keywordIndex].char) {
           for (let z = 0; z <filledKeywordCharArray.length; z++) {
             charObjectOfText[charObjectIndex+z].setIsFilled(true);
@@ -149,7 +148,7 @@ class CharObject {
     this.isFilled = isFilled;
   }
 
-  setPosition(x, y) {
+  setBasePosition(x, y) {
     this.x = x;
     this.y = y;
   }
