@@ -10,14 +10,13 @@ const colorWhite = '#FFFFFF';
 const colorBlack = '#000000';
 
 let covid19LocalizedName = [
-  "コロナウィルス"
-  // "コロナウィルス",
-  // "Coronavirus",
-  // "코로나바이러스감염증",
-  // "коронавирусной инфекции",
-  // "Penyakit koronavirus",
-  // "neumonía por coronavirus",
-  // "कोरोना वायरस रोग"
+  "コロナウィルス",
+  "Coronavirus",
+  "코로나바이러스감염증",
+  "коронавирусной инфекции",
+  "Penyakit koronavirus",
+  "neumonía por coronavirus",
+  "कोरोना वायरस रोग"
 ]
 
 let coronaWord = [
@@ -41,14 +40,22 @@ function setup() {
   codeBird.setToken(accessToken, accessTokenSecret);
   startCount = frameCount;
 
+  let isFinishedGettingResults = [];
+  covid19LocalizedName.forEach((item, i) => {
+    isFinishedGettingResults.push(false);
+  });
+
+
   for (let i=0; i<covid19LocalizedName.length; i++) {
     let params = {
       q: covid19LocalizedName[i],
       result_type: 'recent',
-      count: 20
+      count: 2
     };
 
     codeBird.__call('search_tweets', params, (result) => {
+      isFinishedGettingResults[i] = true;
+
       for (let j=0; j<result.statuses.length; j++) {
         print(result.statuses[j].text);
         let resultText = result.statuses[j].text
@@ -56,6 +63,19 @@ function setup() {
         resultText = resultText.replace(new RegExp('http.*') ,'');
         addCharObject(resultText);
       }
+
+      let isFinishedGettingAllResults = true;
+      for (let k=0; k<isFinishedGettingResults.length; k++) {
+        if (!isFinishedGettingResults[k]) {
+          isFinishedGettingAllResults = false;
+          break;
+        }
+      }
+
+      if (isFinishedGettingAllResults) {
+        print("🔴🔴🔴🔴🔴🔴🔴");
+      }
+
       checkAllCoronaWords();
     });
   }
