@@ -35,7 +35,6 @@ function setup() {
 
 function draw() {
   background(255);
-  text("aaaa", 100, 100);
   for (let i=0; i<results.length; i++) {
     text(results[i], 100, i*50+100);
   }
