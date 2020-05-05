@@ -8,7 +8,9 @@ const codeBird = new Codebird();
 
 var params;
 
-function setup() { 
+var results = [];
+
+function setup() {
   createCanvas(windowWidth, windowHeight);
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
@@ -19,20 +21,19 @@ function setup() {
     result_type: 'recent',
     count: 5
   };
-  
-  codeBird.__call('search_tweets', params, (result) => {
-    for (let i=0; i<result.statuses.length; i++) {
-      print(result.statuses[i].text);
-    }
-  });
 }
 
-function draw() { 
+function draw() {
+  background(255);
   textSize(32);
+  for (let i=0; i<results.length; i++) {
+    text(results[i], 100, i*50+100);
+  }
+
   codeBird.__call('search_tweets', params, (result) => {
     for (let i=0; i<result.statuses.length; i++) {
       print(result.statuses[i].text);
-      text(result.statuses[i].text,10,10);
+      results[i] = result.statuses[i].text
     }
   });
 }
