@@ -56,7 +56,7 @@ function setup() {
 
         combinedText += resultText;
       }
-      checkAllcoronaWord();
+      checkAllCoronaWords();
     });
   }
 }
@@ -112,7 +112,7 @@ function addCharObjectOfText(sentence) {
   }
 }
 
-function checkAllcoronaWord() {
+function checkAllsoronaWords() {
   // 1文字ずつみていく。
   for(let charObjectIndex = 0; charObjectIndex < charObjectOfText.length; charObjectIndex++) {
     for (let p = 0; p<coronaWord.length; p++) {
