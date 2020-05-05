@@ -78,11 +78,12 @@ function draw() {
       if (charObject.isCoronaWord) {
         rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
       }
+      charObject.setBasePosition(drawPos.x, drawPos.y);
 
   		//draw char
   		fill(col);
   		textSize(tSize);
-  		text(charObject.char,drawPos.x,drawPos.y);
+  		text(charObject.char,charObject.x,charObject.y);
   		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*1.5;
