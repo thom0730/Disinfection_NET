@@ -29,12 +29,9 @@ let tSize = 20;
 
 let oldWord = covid19LocalizedName[0];
 
-function preload(){ useFont = loadFont('Nosifer'); }
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(25);
-  textFont(useFont);
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
@@ -76,11 +73,8 @@ function draw() {
   		let offseti = offset + i*2 -(frameCount-startCount);
   		if (offseti > offset) {
         break;
-  		} else if (offseti < 0) {
-  			offseti = 0;
-  			let n = noise((frameCount-startCount)/100,i);
-  			if(n<0.2)offseti += n*100;
   		}
+
   		//char parameter
   		let col = '#000000';
   		// let ch = char(charNums[i] + offseti);
