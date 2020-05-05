@@ -23,9 +23,9 @@ var results = [];
 var combinedText = "";
 let startCount;
 
-let margin = 100;
+let margin = 300;
 let offset = 100;
-let tSize = 45;
+let tSize = 40;
 var startYpos = margin;
 
 let oldWord = covid19LocalizedName[0];
@@ -60,7 +60,8 @@ function setup() {
 }
 
 function draw() {
-  background(255);
+  background(248,246,249); // パターン1
+  //background(28,29,24); // パターン1
   let drawPos = createVector(margin,startYpos);
 
   if (combinedText) {
@@ -81,7 +82,8 @@ function draw() {
   		}
 
   		//char parameter
-  		let col = '#000000';
+      let col = '#000000'; //パターン1
+      //let col = '#C0B3A2'; //パターン2
       let ch = charText[i];
   		//draw char
   		fill(col);
@@ -89,7 +91,7 @@ function draw() {
   		text(ch,drawPos.x,drawPos.y);
   		drawPos.x += textWidth(charText[i]);
   		if(drawPos.x > width-margin) {
-        let downYsize = tSize*2;
+        let downYsize = tSize*1.5;
   			drawPos.x = margin;
   			drawPos.y += downYsize;
         if (drawPos.y >= windowHeight) {
