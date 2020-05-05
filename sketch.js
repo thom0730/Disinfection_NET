@@ -21,7 +21,6 @@ let coronaWord = [
   "コロナ", "新型", "ウィルス", "ウイルス"
 ];
 
-var combinedText = "";
 var charObjects = [];
 let startCount;
 
@@ -53,8 +52,6 @@ function setup() {
         resultText = resultText.replace(new RegExp('^RT ') ,'');
         resultText = resultText.replace(new RegExp('http.*') ,'');
         addCharObject(resultText);
-
-        combinedText += resultText;
       }
       checkAllCoronaWords();
     });
@@ -66,10 +63,8 @@ function draw() {
   //background(28,29,24); // パターン1
   let drawPos = createVector(margin,startYpos);
 
-  if (combinedText) {
-    let charText = split(combinedText,'');
-
-    for(let i = 0; i < charText.length; i++) {
+  if (charObjects) {
+    for(let i = 0; i < charObjects.length; i++) {
   		//culclate offset
   		let offseti = offset + i*2 -(frameCount-startCount);
   		if (offseti > offset) {
@@ -79,7 +74,6 @@ function draw() {
   		//char parameter
       let col = '#000000'; //パターン1
       //let col = '#C0B3A2'; //パターン2
-      let ch = charText[i];
       let charObject = charObjects[i];
       if (charObject.isCoronaWord) {
         rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
@@ -88,8 +82,8 @@ function draw() {
   		//draw char
   		fill(col);
   		textSize(tSize);
-  		text(ch,drawPos.x,drawPos.y);
-  		drawPos.x += textWidth(charText[i]);
+  		text(charObject.char,drawPos.x,drawPos.y);
+  		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*1.5;
   			drawPos.x = margin;
@@ -103,10 +97,10 @@ function draw() {
 }
 
 function addCharObject(sentence) {
-  let charTextArray = split(sentence,'');
-  for(let i = 0; i < charTextArray.length; i++) {
+  let charObjectsArray = split(sentence,'');
+  for(let i = 0; i < charObjectsArray.length; i++) {
     let charObject = new CharObject();
-    charObject.setChar(charTextArray[i]);
+    charObject.setChar(charObjectsArray[i]);
     charObjects.push(charObject);
   }
 }
