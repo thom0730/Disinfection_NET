@@ -8,9 +8,6 @@ const codeBird = new Codebird();
 
 var params;
 
-
-var counter;
-
 function setup() { 
   createCanvas(windowWidth, windowHeight);
 
@@ -34,9 +31,8 @@ function draw() {
   textSize(32);
   codeBird.__call('search_tweets', params, (result) => {
     for (let i=0; i<result.statuses.length; i++) {
-      counter++;
       print(result.statuses[i].text);
-      text(result.statuses[i].text,10,counter);
+      text(result.statuses[i].text,10,10);
     }
   });
 }
