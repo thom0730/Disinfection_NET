@@ -20,11 +20,22 @@ let covid19LocalizedName = [
 ]
 
 let coronaWord = [
-  "コロナ", "新型", "ウィルス", "ウイルス"
+  "コロナ", "新型", "ウィルス", "ウイルス",
+  "COVID-19", "COVID19", "Covid19", "covid19",
+  "corona", "virus", "Corona", "Virus",
+  "korona",
+  "SARS-CoV-2",
+  "코로나바이러스감염증", "코로나19",
+  "коронавирусной инфекции",
+  "Penyakit koronavirus",
+  "neumonía por coronavirus",
+  "कोरोना वायरस रोग"
 ];
 
 var charObjects = [];
 let startCount;
+
+let results = [];
 
 let margin = 300;
 let offset = 100;
@@ -33,7 +44,7 @@ var startYpos = margin;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  frameRate(25);
+  frameRate(60);//25
   textFont('monospace');
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
@@ -50,7 +61,7 @@ function setup() {
     let params = {
       q: covid19LocalizedName[i],
       result_type: 'recent',
-      count: 2
+      count: 100
     };
 
     codeBird.__call('search_tweets', params, (result) => {
@@ -61,7 +72,7 @@ function setup() {
         let resultText = result.statuses[j].text
         resultText = resultText.replace(new RegExp('^RT ') ,'');
         resultText = resultText.replace(new RegExp('http.*') ,'');
-        addCharObject(resultText);
+        results.push(resultText);
       }
 
       let isFinishedGettingAllResults = true;
@@ -73,10 +84,12 @@ function setup() {
       }
 
       if (isFinishedGettingAllResults) {
-        print("🔴🔴🔴🔴🔴🔴🔴");
+        shuffle(results, true);
+        results.forEach((item, i) => {
+          addCharObject(item);
+        });
+        checkAllCoronaWords();
       }
-
-      checkAllCoronaWords();
     });
   }
 }
