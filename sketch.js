@@ -48,8 +48,11 @@ function setup() {
     codeBird.__call('search_tweets', params, (result) => {
       for (let j=0; j<result.statuses.length; j++) {
         print(result.statuses[j].text);
+        let resultText = result.statuses[j].text
+        resultText = resultText.replace(new RegExp('^RT ') ,'');
+        resultText = resultText.replace(new RegExp('http.*') ,'');
         results.push(result.statuses[j].text);
-        combinedText += result.statuses[j].text;
+        combinedText += resultText;
       }
     });
   }
