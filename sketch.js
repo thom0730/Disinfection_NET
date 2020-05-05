@@ -6,6 +6,9 @@ var accessTokenSecret = '3bJ2iOl1nk9edbHsSUdayqy2AnWCBJKbyhkNZE4fPHWhY';
 
 const codeBird = new Codebird();
 
+const colorWhite = '#FFFFFF';
+const colorBlack = '#000000';
+
 let covid19LocalizedName = [
   "コロナウィルス"
   // "コロナウィルス",
@@ -61,6 +64,7 @@ function setup() {
 function draw() {
   background(248,246,249); // パターン1
   //background(28,29,24); // パターン1
+  textSize(tSize);
   let drawPos = createVector(margin,startYpos);
 
   if (charObjects) {
@@ -71,18 +75,22 @@ function draw() {
         break;
   		}
 
-  		//char parameter
-      let col = '#000000'; //パターン1
-      //let col = '#C0B3A2'; //パターン2
       let charObject = charObjects[i];
       if (charObject.isCoronaWord) {
+        fill(colorBlack); //パターン1
         rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
       }
       charObject.setBasePosition(drawPos.x, drawPos.y);
 
   		//draw char
-  		fill(col);
-  		textSize(tSize);
+
+      if (charObject.isCoronaWord) {
+        fill(colorWhite);
+      } else {
+        //パターン2 '#C0B3A2';
+        fill(colorBlack); //パターン1
+      }
+
   		text(charObject.char,charObject.x,charObject.y);
   		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
