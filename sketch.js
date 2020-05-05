@@ -1,13 +1,3 @@
-// twitter api reference
-// https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets.html
-
-// const consumerKey = 'O4ULX60LivmMtUSxXeWcq6oMx';
-// const consumerSecret = 'SgzOhc0Vh0TCH4i85wyDxzAfjaKEEzsO3noBmyf8F0SPSQH7Oy';
-
-// const accessToken =	'862190010-dcaFHXRnb0u8u8wMf3J1h1wvwrCn56DqI0wMUNVe';
-// const accessTokenSecret ='9Hq5hVNlaFz0DoLmu292JTiY8a3m8KOqKHeKPJAn7vBpV';
-
-
 var consumerKey = 'gd1NIfRFADEMhRr9Yb5kPHojT';
 var consumerSecret = 'zA9IjQOMdETsWDjO03vhnMV2N45Jstd64YWWRz8BcdZR9BiCA5';
 
@@ -35,6 +25,7 @@ function setup() {
 
 function draw() {
   background(255);
+  textSize(32);
   for (let i=0; i<results.length; i++) {
     text(results[i], 100, i*50+100);
   }
