@@ -22,7 +22,7 @@ let coronaWord = [
 ];
 
 var combinedText = "";
-var charObjectOfText = [];
+var charObjects = [];
 let startCount;
 
 let margin = 300;
@@ -80,7 +80,7 @@ function draw() {
       let col = '#000000'; //パターン1
       //let col = '#C0B3A2'; //パターン2
       let ch = charText[i];
-      let charObject = charObjectOfText[i];
+      let charObject = charObjects[i];
       if (charObject.isCoronaWord) {
         rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
       }
@@ -100,7 +100,6 @@ function draw() {
   		}
   	}
   };
-  print(charObjectOfText);
 }
 
 function addCharObjectOfText(sentence) {
@@ -108,30 +107,30 @@ function addCharObjectOfText(sentence) {
   for(let i = 0; i < charTextArray.length; i++) {
     let charObject = new CharObject();
     charObject.setChar(charTextArray[i]);
-    charObjectOfText.push(charObject);
+    charObjects.push(charObject);
   }
 }
 
-function checkAllsoronaWords() {
+function checkAllCoronaWords() {
   // 1文字ずつみていく。
-  for(let charObjectIndex = 0; charObjectIndex < charObjectOfText.length; charObjectIndex++) {
+  for(let charObjectIndex = 0; charObjectIndex < charObjects.length; charObjectIndex++) {
     for (let p = 0; p<coronaWord.length; p++) {
       let coronaWordCharArray = split(coronaWord[p],'');
 
       // 該当する文字がキーワードと一致するか確認する
       for (let keywordIndex = 0; keywordIndex < coronaWordCharArray.length; keywordIndex++) {
-        if (charObjectOfText[charObjectIndex+keywordIndex].isCoronaWord) { break; }
+        if (charObjects[charObjectIndex+keywordIndex].isCoronaWord) { break; }
 
-        if (coronaWordCharArray[keywordIndex] != charObjectOfText[charObjectIndex+keywordIndex].char) {
-          charObjectOfText[charObjectIndex+keywordIndex].setIsCoronaWord(false);
+        if (coronaWordCharArray[keywordIndex] != charObjects[charObjectIndex+keywordIndex].char) {
+          charObjects[charObjectIndex+keywordIndex].setIsCoronaWord(false);
           break;
         }
 
         // 該当する文字からキーワードの文字数分後ろまで一致するか確認し、
         // 一致する場合、一致した文字全てにtrueを入れる
-        if (coronaWordCharArray[coronaWordCharArray.length-1] == charObjectOfText[charObjectIndex+keywordIndex].char) {
+        if (coronaWordCharArray[coronaWordCharArray.length-1] == charObjects[charObjectIndex+keywordIndex].char) {
           for (let z = 0; z <coronaWordCharArray.length; z++) {
-            charObjectOfText[charObjectIndex+z].setIsCoronaWord(true);
+            charObjects[charObjectIndex+z].setIsCoronaWord(true);
           }
         }
       }
