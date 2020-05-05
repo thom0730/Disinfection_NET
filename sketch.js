@@ -17,7 +17,7 @@ let covid19LocalizedName = [
   // "कोरोना वायरस रोग"
 ]
 
-let filledKeywords = [
+let coronaWord = [
   "コロナ", "新型", "ウィルス", "ウイルス"
 ];
 
@@ -56,7 +56,7 @@ function setup() {
 
         combinedText += resultText;
       }
-      checkAllFilledKeyword();
+      checkAllcoronaWord();
     });
   }
 }
@@ -81,7 +81,7 @@ function draw() {
       //let col = '#C0B3A2'; //パターン2
       let ch = charText[i];
       let charObject = charObjectOfText[i];
-      if (charObject.isFilled) {
+      if (charObject.isCoronaWord) {
         rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
       }
 
@@ -112,26 +112,26 @@ function addCharObjectOfText(sentence) {
   }
 }
 
-function checkAllFilledKeyword() {
+function checkAllcoronaWord() {
   // 1文字ずつみていく。
   for(let charObjectIndex = 0; charObjectIndex < charObjectOfText.length; charObjectIndex++) {
-    for (let p = 0; p<filledKeywords.length; p++) {
-      let filledKeywordCharArray = split(filledKeywords[p],'');
+    for (let p = 0; p<coronaWord.length; p++) {
+      let coronaWordCharArray = split(coronaWord[p],'');
 
       // 該当する文字がキーワードと一致するか確認する
-      for (let keywordIndex = 0; keywordIndex < filledKeywordCharArray.length; keywordIndex++) {
-        if (charObjectOfText[charObjectIndex+keywordIndex].isFilled) { break; }
+      for (let keywordIndex = 0; keywordIndex < coronaWordCharArray.length; keywordIndex++) {
+        if (charObjectOfText[charObjectIndex+keywordIndex].isCoronaWord) { break; }
 
-        if (filledKeywordCharArray[keywordIndex] != charObjectOfText[charObjectIndex+keywordIndex].char) {
-          charObjectOfText[charObjectIndex+keywordIndex].setIsFilled(false);
+        if (coronaWordCharArray[keywordIndex] != charObjectOfText[charObjectIndex+keywordIndex].char) {
+          charObjectOfText[charObjectIndex+keywordIndex].setIsCoronaWord(false);
           break;
         }
 
         // 該当する文字からキーワードの文字数分後ろまで一致するか確認し、
         // 一致する場合、一致した文字全てにtrueを入れる
-        if (filledKeywordCharArray[filledKeywordCharArray.length-1] == charObjectOfText[charObjectIndex+keywordIndex].char) {
-          for (let z = 0; z <filledKeywordCharArray.length; z++) {
-            charObjectOfText[charObjectIndex+z].setIsFilled(true);
+        if (coronaWordCharArray[coronaWordCharArray.length-1] == charObjectOfText[charObjectIndex+keywordIndex].char) {
+          for (let z = 0; z <coronaWordCharArray.length; z++) {
+            charObjectOfText[charObjectIndex+z].setIsCoronaWord(true);
           }
         }
       }
@@ -144,8 +144,8 @@ class CharObject {
     this.char = char;
   }
 
-  setIsFilled(isFilled) {
-    this.isFilled = isFilled;
+  setIsCoronaWord(isCoronaWord) {
+    this.isCoronaWord = isCoronaWord;
   }
 
   setBasePosition(x, y) {
