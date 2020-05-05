@@ -7,7 +7,7 @@ var accessTokenSecret = '3bJ2iOl1nk9edbHsSUdayqy2AnWCBJKbyhkNZE4fPHWhY';
 const codeBird = new Codebird();
 let useFont;
 
-var covid19LocalizedName = [
+let covid19LocalizedName = [
   "コロナウィルス"
   // "コロナウィルス",
   // "Coronavirus",
@@ -18,6 +18,10 @@ var covid19LocalizedName = [
   // "कोरोना वायरस रोग"
 ]
 
+let filledKeywords = [
+  "コロナ", "新型", "ウィルス", "ウイルス"
+];
+
 var results = [];
 
 var combinedText = "";
@@ -27,8 +31,6 @@ let margin = 300;
 let offset = 100;
 let tSize = 40;
 var startYpos = margin;
-
-let oldWord = covid19LocalizedName[0];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -65,13 +67,6 @@ function draw() {
   let drawPos = createVector(margin,startYpos);
 
   if (combinedText) {
-    if (random(3) > 2.5) {
-      let newWords = ['おいしいご飯　', 'サンマ　　　　', 'アイス　　　　'];
-      let newWord = newWords[int(random(newWords.length))];
-      combinedText = combinedText.replace(new RegExp(oldWord, 'g'), newWord);
-      oldWord = newWord;
-    }
-
     let charText = split(combinedText,'');
 
     for(let i = 0; i < charText.length; i++) {
@@ -85,6 +80,21 @@ function draw() {
       let col = '#000000'; //パターン1
       //let col = '#C0B3A2'; //パターン2
       let ch = charText[i];
+      let rectWidth = 0.0;
+      for (let p=0; p<filledKeywords.length; p++) {
+        let keyword = filledKeywords[p];
+        for (let j=0; j < keyword.length; j++) {
+          let keywordChar = split(keyword,'');
+          if (keywordChar[j] != charText[i+j]) {
+            break;
+          }
+          rectWidth += textWidth(charText[i+j]);
+          if (keywordChar[keywordChar.length-1] == charText[i+j]) {
+            rect(drawPos.x, drawPos.y-tSize, rectWidth, tSize);
+          }
+        }
+      }
+
   		//draw char
   		fill(col);
   		textSize(tSize);
