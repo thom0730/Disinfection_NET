@@ -8,7 +8,7 @@ const codeBird = new Codebird();
 let useFont;
 
 var covid19LocalizedName = [
-  "コロナウィルス"
+  "コロナ"
   // "コロナウィルス",
   // "Coronavirus",
   // "코로나바이러스감염증",
@@ -64,12 +64,12 @@ function draw() {
   let drawPos = createVector(margin,startYpos);
 
   if (combinedText) {
-    if (random(3) > 2.5) {
-      let newWords = ['おいしいご飯　', 'サンマ　　　　', 'アイス　　　　'];
-      let newWord = newWords[int(random(newWords.length))];
-      combinedText = combinedText.replace(new RegExp(oldWord, 'g'), newWord);
-      oldWord = newWord;
-    }
+    // if (random(3) > 2.5) {
+    //   let newWords = ['おいしいご飯　', 'サンマ　　　　', 'アイス　　　　'];
+    //   let newWord = newWords[int(random(newWords.length))];
+    //   combinedText = combinedText.replace(new RegExp(oldWord, 'g'), newWord);
+    //   oldWord = newWord;
+    // }
 
     let charText = split(combinedText,'');
 
@@ -83,6 +83,17 @@ function draw() {
   		//char parameter
   		let col = '#000000';
       let ch = charText[i];
+      let rectWidth = 0.0;
+      for (let j=0; j < covid19LocalizedName[0].length; j++) {
+        let charTargetWord = split(covid19LocalizedName[0],'');
+        if (charTargetWord[j] != charText[i+j]) {
+          break;
+        }
+        rectWidth += textWidth(charText[i+j]);
+        if (charTargetWord[charTargetWord.length-1] == charText[i+j]) {
+          rect(drawPos.x, drawPos.y-tSize, rectWidth, tSize);
+        }
+      }
   		//draw char
   		fill(col);
   		textSize(tSize);
