@@ -7,13 +7,14 @@ var accessTokenSecret = '3bJ2iOl1nk9edbHsSUdayqy2AnWCBJKbyhkNZE4fPHWhY';
 const codeBird = new Codebird();
 
 var covid19LocalizedName = [
-  "コロナウィルス",
-  "Coronavirus",
-  "코로나바이러스감염증",
-  "коронавирусной инфекции",
-  "Penyakit koronavirus",
-  "neumonía por coronavirus",
-  "कोरोना वायरस रोग"
+  "コロナウィルス"
+  // "コロナウィルス",
+  // "Coronavirus",
+  // "코로나바이러스감염증",
+  // "коронавирусной инфекции",
+  // "Penyakit koronavirus",
+  // "neumonía por coronavirus",
+  // "कोरोना वायरस रोग"
 ]
 
 var results = [];
@@ -23,7 +24,7 @@ let startCount;
 
 let margin = 100;
 let offset = 100;
-let tSize = 16;
+let tSize = 40;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -52,27 +53,27 @@ function setup() {
 function draw() {
   background(255);
   let drawPos = createVector(margin,margin);
-  textSize(tSize);
 
   if (combinedText) {
     let charNums = unchar(split(combinedText,''));
+
     for(let i = 0; i < charNums.length; i++) {
   		//culclate offset
   		let offseti = offset + i*2 -(frameCount-startCount);
-  		if(offseti > offset)break;
-  		else if(offseti < 0)
-  		{
+  		if (offseti > offset) {
+        break;
+  		} else if (offseti < 0) {
   			offseti = 0;
   			let n = noise((frameCount-startCount)/100,i);
   			if(n<0.2)offseti += n*100;
   		}
   		//char parameter
   		let col = '#000000';
-  		let ch = char(charNums[i] + offseti);
-  		let size = tSize;
+  		// let ch = char(charNums[i] + offseti);
+      let ch = char(charNums[i]);
   		//draw char
   		fill(col);
-  		textSize(size);
+  		textSize(tSize);
   		text(ch,drawPos.x,drawPos.y);
   		drawPos.x += textWidth(char(charNums[i]));
   		if(drawPos.x > width-margin)
@@ -82,5 +83,4 @@ function draw() {
   		}
   	}
   };
-
 }
