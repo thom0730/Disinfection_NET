@@ -32,8 +32,6 @@ let offset = 100;
 let tSize = 45;
 var startYpos = margin;
 
-// let oldWord = filledKeyword[0];
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(25);
@@ -68,13 +66,6 @@ function draw() {
   let drawPos = createVector(margin,startYpos);
 
   if (combinedText) {
-    // if (random(3) > 2.5) {
-    //   let newWords = ['おいしいご飯　', 'サンマ　　　　', 'アイス　　　　'];
-    //   let newWord = newWords[int(random(newWords.length))];
-    //   combinedText = combinedText.replace(new RegExp(oldWord, 'g'), newWord);
-    //   oldWord = newWord;
-    // }
-
     let charText = split(combinedText,'');
 
     for(let i = 0; i < charText.length; i++) {
