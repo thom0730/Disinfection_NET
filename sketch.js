@@ -21,8 +21,7 @@ let coronaWord = [
   "コロナ", "新型", "ウィルス", "ウイルス"
 ];
 
-var combinedText = "";
-var charObjectOfText = [];
+var charObjects = [];
 let startCount;
 
 let margin = 300;
@@ -52,11 +51,9 @@ function setup() {
         let resultText = result.statuses[j].text
         resultText = resultText.replace(new RegExp('^RT ') ,'');
         resultText = resultText.replace(new RegExp('http.*') ,'');
-        addCharObjectOfText(resultText);
-
-        combinedText += resultText;
+        addCharObject(resultText);
       }
-      checkAllcoronaWord();
+      checkAllCoronaWords();
     });
   }
 }
@@ -66,10 +63,8 @@ function draw() {
   //background(28,29,24); // パターン1
   let drawPos = createVector(margin,startYpos);
 
-  if (combinedText) {
-    let charText = split(combinedText,'');
-
-    for(let i = 0; i < charText.length; i++) {
+  if (charObjects) {
+    for(let i = 0; i < charObjects.length; i++) {
   		//culclate offset
   		let offseti = offset + i*2 -(frameCount-startCount);
   		if (offseti > offset) {
@@ -79,17 +74,17 @@ function draw() {
   		//char parameter
       let col = '#000000'; //パターン1
       //let col = '#C0B3A2'; //パターン2
-      let ch = charText[i];
-      let charObject = charObjectOfText[i];
+      let charObject = charObjects[i];
       if (charObject.isCoronaWord) {
         rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
       }
+      charObject.setBasePosition(drawPos.x, drawPos.y);
 
   		//draw char
   		fill(col);
   		textSize(tSize);
-  		text(ch,drawPos.x,drawPos.y);
-  		drawPos.x += textWidth(charText[i]);
+  		text(charObject.char,charObject.x,charObject.y);
+  		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*1.5;
   			drawPos.x = margin;
@@ -100,38 +95,37 @@ function draw() {
   		}
   	}
   };
-  print(charObjectOfText);
 }
 
-function addCharObjectOfText(sentence) {
-  let charTextArray = split(sentence,'');
-  for(let i = 0; i < charTextArray.length; i++) {
+function addCharObject(sentence) {
+  let charObjectsArray = split(sentence,'');
+  for(let i = 0; i < charObjectsArray.length; i++) {
     let charObject = new CharObject();
-    charObject.setChar(charTextArray[i]);
-    charObjectOfText.push(charObject);
+    charObject.setChar(charObjectsArray[i]);
+    charObjects.push(charObject);
   }
 }
 
-function checkAllcoronaWord() {
+function checkAllCoronaWords() {
   // 1文字ずつみていく。
-  for(let charObjectIndex = 0; charObjectIndex < charObjectOfText.length; charObjectIndex++) {
+  for(let charObjectIndex = 0; charObjectIndex < charObjects.length; charObjectIndex++) {
     for (let p = 0; p<coronaWord.length; p++) {
       let coronaWordCharArray = split(coronaWord[p],'');
 
       // 該当する文字がキーワードと一致するか確認する
       for (let keywordIndex = 0; keywordIndex < coronaWordCharArray.length; keywordIndex++) {
-        if (charObjectOfText[charObjectIndex+keywordIndex].isCoronaWord) { break; }
+        if (charObjects[charObjectIndex+keywordIndex].isCoronaWord) { break; }
 
-        if (coronaWordCharArray[keywordIndex] != charObjectOfText[charObjectIndex+keywordIndex].char) {
-          charObjectOfText[charObjectIndex+keywordIndex].setIsCoronaWord(false);
+        if (coronaWordCharArray[keywordIndex] != charObjects[charObjectIndex+keywordIndex].char) {
+          charObjects[charObjectIndex+keywordIndex].setIsCoronaWord(false);
           break;
         }
 
         // 該当する文字からキーワードの文字数分後ろまで一致するか確認し、
         // 一致する場合、一致した文字全てにtrueを入れる
-        if (coronaWordCharArray[coronaWordCharArray.length-1] == charObjectOfText[charObjectIndex+keywordIndex].char) {
+        if (coronaWordCharArray[coronaWordCharArray.length-1] == charObjects[charObjectIndex+keywordIndex].char) {
           for (let z = 0; z <coronaWordCharArray.length; z++) {
-            charObjectOfText[charObjectIndex+z].setIsCoronaWord(true);
+            charObjects[charObjectIndex+z].setIsCoronaWord(true);
           }
         }
       }
