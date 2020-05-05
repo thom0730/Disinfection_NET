@@ -25,7 +25,7 @@ let startCount;
 
 let margin = 100;
 let offset = 100;
-let tSize = 40;
+let tSize = 45;
 var startYpos = margin;
 
 let oldWord = covid19LocalizedName[0];
@@ -33,6 +33,7 @@ let oldWord = covid19LocalizedName[0];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(25);
+  textFont('monospace');
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
