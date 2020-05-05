@@ -70,9 +70,9 @@ function draw() {
       oldWord = newWord;
     }
 
-    let charNums = unchar(split(combinedText,''));
+    let charText = split(combinedText,'');
 
-    for(let i = 0; i < charNums.length; i++) {
+    for(let i = 0; i < charText.length; i++) {
   		//culclate offset
   		let offseti = offset + i*2 -(frameCount-startCount);
   		if (offseti > offset) {
@@ -81,13 +81,12 @@ function draw() {
 
   		//char parameter
   		let col = '#000000';
-  		// let ch = char(charNums[i] + offseti);
-      let ch = char(charNums[i]);
+      let ch = charText[i];
   		//draw char
   		fill(col);
   		textSize(tSize);
   		text(ch,drawPos.x,drawPos.y);
-  		drawPos.x += textWidth(char(charNums[i]));
+  		drawPos.x += textWidth(charText[i]);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*2;
   			drawPos.x = margin;
