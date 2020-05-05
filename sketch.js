@@ -52,7 +52,7 @@ function setup() {
         let resultText = result.statuses[j].text
         resultText = resultText.replace(new RegExp('^RT ') ,'');
         resultText = resultText.replace(new RegExp('http.*') ,'');
-        addCharObjectOfText(resultText);
+        addCharObject(resultText);
 
         combinedText += resultText;
       }
@@ -102,7 +102,7 @@ function draw() {
   };
 }
 
-function addCharObjectOfText(sentence) {
+function addCharObject(sentence) {
   let charTextArray = split(sentence,'');
   for(let i = 0; i < charTextArray.length; i++) {
     let charObject = new CharObject();
