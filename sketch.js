@@ -5,6 +5,7 @@ var accessToken = '223004989-A3wvrZ3iGBTyceAceSQFUs9kFrM9pn16NIb6fAt9';
 var accessTokenSecret = '3bJ2iOl1nk9edbHsSUdayqy2AnWCBJKbyhkNZE4fPHWhY';
 
 const codeBird = new Codebird();
+let useFont;
 
 var covid19LocalizedName = [
   "コロナウィルス"
@@ -24,10 +25,16 @@ let startCount;
 
 let margin = 100;
 let offset = 100;
-let tSize = 40;
+let tSize = 20;
+
+let oldWord = covid19LocalizedName[0];
+
+function preload(){ useFont = loadFont('Nosifer'); }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  frameRate(25);
+  textFont(useFont);
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
@@ -55,6 +62,13 @@ function draw() {
   let drawPos = createVector(margin,margin);
 
   if (combinedText) {
+    if (random(3) > 2.5) {
+      let newWords = ['おいしいご飯　', 'サンマ　　　　', 'アイス　　　　'];
+      let newWord = newWords[int(random(newWords.length))];
+      combinedText = combinedText.replace(new RegExp(oldWord, 'g'), newWord);
+      oldWord = newWord;
+    }
+
     let charNums = unchar(split(combinedText,''));
 
     for(let i = 0; i < charNums.length; i++) {
