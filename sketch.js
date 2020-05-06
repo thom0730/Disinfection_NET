@@ -35,6 +35,7 @@ let coronaWord = [
 var charObjects = [];
 let startCount;
 let results = [];
+let isFinishedLoading = false;
 
 let world;
 
@@ -44,13 +45,13 @@ let tSize;
 var startYpos = margin;
 var endPoint = 13;
 var speed = 1;
-var lineSpacing = 1.9;
+var lineSpacing = 1.4;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
   textFont('monospace');
-  tSize = 45*windowWidth/1440;
+  tSize = 50*windowWidth/1440;
   world = createWorld();
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
@@ -90,6 +91,7 @@ function setup() {
       }
 
       if (isFinishedGettingAllResults) {
+        isFinishedLoading = true;
         shuffle(results, true);
         results.forEach((item, i) => {
           addCharObject(item);
@@ -114,7 +116,7 @@ function draw() {
 
   let drawPos = createVector(margin,startYpos);
 
-  if (charObjects) {
+  if (charObjects && isFinishedLoading) {
     for(let i = 0; i < charObjects.length; i++) {
       //culclate offset
       let offseti = offset + i*speed -(frameCount-startCount);
@@ -132,11 +134,26 @@ function draw() {
         let downYsize = tSize*lineSpacing;
         drawPos.x = margin;
         drawPos.y += downYsize;
-        if (drawPos.y >= windowHeight - tSize* endPoint) {
+        if (drawPos.y >= 2*windowHeight/3) {
           startYpos -= downYsize;
         }
       }
     }
+  } else {
+    let rectSize = 50;
+    push();
+    rectMode(CENTER);
+    noFill();
+    translate (windowWidth/2, windowWidth/2);
+    stroke(colorBlack);
+    rotate(frameCount * 0.03);
+    rect(0, 0, rectSize, rectSize);
+    rotate(frameCount * 0.1);
+    rect(0, 0, rectSize, rectSize);
+    rotate(frameCount * 0.05);
+    rect(0, 0, rectSize, rectSize);
+
+    pop();
   };
 }
 
@@ -264,8 +281,6 @@ class CharObject {
         push();
         rotate(a);
         fill(colorBlack);
-        rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
-        fill(colorWhite);
         text(this.char, pos.x, pos.y);
         pop();
       } else {
