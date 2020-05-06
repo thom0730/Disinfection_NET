@@ -144,7 +144,7 @@ function draw() {
     push();
     rectMode(CENTER);
     noFill();
-    translate (windowWidth/2, windowWidth/2);
+    translate (windowWidth/2, windowHeight/2);
     stroke(colorBlack);
     rotate(frameCount * 0.03);
     rect(0, 0, rectSize, rectSize);
