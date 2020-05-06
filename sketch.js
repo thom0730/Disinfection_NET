@@ -49,9 +49,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
   textFont('monospace');
-  world = createWorld(new box2d.b2Vec2(0, 0));
+  world = createWorld();
 
-  bottomObject = new BottomObject(0, windowHeight, windowWidth, 10);
+  bottomObject = new BottomObject(windowWidth/2, windowHeight-10, windowWidth, 10);
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
@@ -304,6 +304,7 @@ class BottomObject {
     push();
     fill(colorWhite);
     noStroke();
+    rectMode(CENTER);
     rect(this.x, this.y, this.w, this.h);
     pop();
   }
