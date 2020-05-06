@@ -196,14 +196,20 @@ class CharObject {
   }
 
   validatePhysics() {
+    let insideDisplay = ( 0.0 < this.x && this.x < windowWidth && 0.0 < this.y && this.y < windowHeight );
+
     if (!this.checkedToNeedBody) {
-      if ( 0.0 < this.x && this.x < windowWidth && 0.0 < this.y && this.y < windowHeight ) {
+      if (insideDisplay) {
         this.isDisplay = true;
         this.setupBody();
       } else if (this.body) {
         this.isDisplay = false;
         world.DestroyBody(this.body);
       }
+    }
+
+    if (!insideDisplay && this.body) {
+      world.DestroyBody(this.body);
     }
   }
 
