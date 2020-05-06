@@ -117,6 +117,13 @@ function draw() {
   let drawPos = createVector(margin,startYpos);
 
   if (charObjects && isFinishedLoading) {
+    push();
+    translate (14, 14);
+    rotate(PI/2);
+    textSize(tSize*0.7);
+    text('Disinfection.net', 0, 0);
+    pop();
+
     for(let i = 0; i < charObjects.length; i++) {
       //culclate offset
       let offseti = offset + i*speed -(frameCount-startCount);
@@ -140,7 +147,7 @@ function draw() {
       }
     }
   } else {
-    let rectSize = 50;
+    let rectSize = 40;
     push();
     rectMode(CENTER);
     noFill();
