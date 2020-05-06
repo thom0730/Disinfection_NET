@@ -91,10 +91,6 @@ function setup() {
           addCharObject(item);
         });
         checkAllCoronaWords();
-        charObjects.forEach((item, i) => {
-          item.setupBody();
-        });
-
       }
     });
   }
@@ -120,23 +116,10 @@ function draw() {
   		}
 
       let charObject = charObjects[i];
-      if (charObject.isCoronaWord) {
-        fill(colorBlack); //パターン1
-        rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
-      }
+      charObject.validatePhysics();
       charObject.setBasePosition(drawPos.x, drawPos.y);
-
-  		//draw char
-      if (charObject.isCoronaWord) {
-        fill(colorWhite);
-      } else {
-        //パターン2 '#C0B3A2';
-        fill(colorBlack); //パターン1
-      }
-
       charObject.display();
 
-      text(charObject.char,charObject.x,charObject.y);
   		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*1.5;
@@ -186,9 +169,21 @@ function checkAllCoronaWords() {
   }
 }
 
+function validatePhysicsObject(charObject) {
+  if (!charObject.checkedToNeedBody) {
+    if ( 0.0 < charObject.x && charObject.x < windowWidth && 0.0 < charObject.y && charObject.y < windowHeight ) {
+      charObject.setupBody();
+    } else if (charObject.body) {
+      world.DestroyBody(charObject.body);
+    }
+  }
+}
+
 class CharObject {
   setChar(char){
     this.char = char;
+    this.checkedToNeedBody = false;
+    this.isDisplay = false;
   }
 
   setIsCoronaWord(isCoronaWord) {
@@ -200,12 +195,24 @@ class CharObject {
     this.y = y;
   }
 
+  validatePhysics() {
+    if (!this.checkedToNeedBody) {
+      if ( 0.0 < this.x && this.x < windowWidth && 0.0 < this.y && this.y < windowHeight ) {
+        this.isDisplay = true;
+        this.setupBody();
+      } else if (this.body) {
+        this.isDisplay = false;
+        world.DestroyBody(this.body);
+      }
+    }
+  }
+
   setupBody() {
     if (this.isCoronaWord) {
       // Define a body
       let bd = new box2d.b2BodyDef();
       bd.type = box2d.b2BodyType.b2_dynamicBody;
-      bd.position = scaleToWorld(100, 100);
+      bd.position = scaleToWorld(this.x, this.y);
 
       // Define a fixture
       let fd = new box2d.b2FixtureDef();
@@ -223,29 +230,38 @@ class CharObject {
       // Attach the fixture
       this.body.CreateFixture(fd);
     }
+    this.checkedToNeedBody = true;
   }
 
-  // updatePosition() {
-  //   this.body.position =
-  // }
-
   display() {
-    if (this.isCoronaWord) {
-      // Get the body's position
-      let pos = scaleToPixels(this.body.GetPosition());
-      // Get its angle of rotation
-      let a = this.body.GetAngleRadians();
+    if (this.isDisplay) {
+      if (this.isCoronaWord && this.body) {
 
-      // Draw it!
-      push();
-      rotate(a);
-      fill(colorBlack);
-      stroke(200);
-      strokeWeight(2);
-      rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
-      fill(colorWhite);
-      text(this.char, pos.x, pos.y);
-      pop();
+        // 固定テキストの背景の黒塗り
+        push();
+        fill(colorBlack);
+        rect(this.x, this.y-tSize, textWidth(this.char), tSize);
+        pop();
+
+        // 落ちるテキスト
+        let pos = scaleToPixels(this.body.GetPosition());
+        let a = this.body.GetAngleRadians();
+
+        push();
+        rotate(a);
+        fill(colorBlack);
+        // stroke(200);
+        // strokeWeight(2);
+        rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
+        fill(colorWhite);
+        text(this.char, pos.x, pos.y);
+        pop();
+      } else {
+        push();
+        fill(colorBlack);
+        text(this.char, this.x, this.y);
+        pop();
+      }
     }
   }
 }
