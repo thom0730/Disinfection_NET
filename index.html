@@ -50,11 +50,11 @@ let results = [];
 
 let world;
 
-let margin = 300;
+let margin = 200;
 let offset = 100;
-let tSize = 25;
+let tSize;
 var startYpos = margin;
-var endPoint = 7;
+var endPoint = 15;
 var speed = 1;
 var lineSpacing = 1.6;
 
@@ -64,6 +64,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
   textFont('monospace');
+  tSize = 25*windowWidth/1440;
   world = createWorld();
 
   bottomObject = new BottomObject(windowWidth/2, windowHeight-10, windowWidth, 10);
