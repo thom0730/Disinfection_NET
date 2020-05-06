@@ -35,6 +35,7 @@ let coronaWord = [
 var charObjects = [];
 let startCount;
 let results = [];
+let isFinishedLoading = false;
 
 let world;
 
@@ -90,6 +91,7 @@ function setup() {
       }
 
       if (isFinishedGettingAllResults) {
+        isFinishedLoading = true;
         shuffle(results, true);
         results.forEach((item, i) => {
           addCharObject(item);
@@ -114,7 +116,7 @@ function draw() {
 
   let drawPos = createVector(margin,startYpos);
 
-  if (charObjects) {
+  if (charObjects && isFinishedLoading) {
     for(let i = 0; i < charObjects.length; i++) {
       //culclate offset
       let offseti = offset + i*speed -(frameCount-startCount);
@@ -137,6 +139,21 @@ function draw() {
         }
       }
     }
+  } else {
+    let rectSize = 50;
+    push();
+    rectMode(CENTER);
+    noFill();
+    translate (windowWidth/2, windowWidth/2);
+    stroke(colorBlack);
+    rotate(frameCount * 0.03);
+    rect(0, 0, rectSize, rectSize);
+    rotate(frameCount * 0.1);
+    rect(0, 0, rectSize, rectSize);
+    rotate(frameCount * 0.05);
+    rect(0, 0, rectSize, rectSize);
+
+    pop();
   };
 }
 
