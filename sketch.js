@@ -43,11 +43,15 @@ let offset = 100;
 let tSize = 40;
 var startYpos = margin;
 
+let bottomObject;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
   textFont('monospace');
-  world = createWorld(new box2d.b2Vec2(0, 0));
+  world = createWorld();
+
+  bottomObject = new BottomObject(windowWidth/2, windowHeight-10, windowWidth, 10);
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
@@ -100,12 +104,15 @@ function draw() {
   background(248,246,249); // パターン1
   //background(28,29,24); // パターン1
   textSize(tSize);
-  let drawPos = createVector(margin,startYpos);
 
   // We must always step through time!
   let timeStep = 1.0 / 20;
   // 2nd and 3rd arguments are velocity and position iterations
   world.Step(timeStep, 10, 10);
+  bottomObject.display();
+
+
+  let drawPos = createVector(margin,startYpos);
 
   if (charObjects) {
     for(let i = 0; i < charObjects.length; i++) {
@@ -196,14 +203,20 @@ class CharObject {
   }
 
   validatePhysics() {
+    let insideDisplay = ( 0.0 < this.x && this.x < windowWidth && 0.0 < this.y && this.y < windowHeight );
+
     if (!this.checkedToNeedBody) {
-      if ( 0.0 < this.x && this.x < windowWidth && 0.0 < this.y && this.y < windowHeight ) {
+      if (insideDisplay) {
         this.isDisplay = true;
         this.setupBody();
       } else if (this.body) {
         this.isDisplay = false;
         world.DestroyBody(this.body);
       }
+    }
+
+    if (!insideDisplay && this.body) {
+      world.DestroyBody(this.body);
     }
   }
 
@@ -261,5 +274,38 @@ class CharObject {
         pop();
       }
     }
+  }
+}
+
+
+class BottomObject {
+  constructor(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+
+    let fd = new box2d.b2FixtureDef();
+    fd.density = 1.0;
+    fd.friction = 0.5;
+    fd.restitution = 0.2;
+
+    let bd = new box2d.b2BodyDef();
+
+    bd.type = box2d.b2BodyType.b2_staticBody;
+    bd.position.x = scaleToWorld(this.x);
+    bd.position.y = scaleToWorld(this.y);
+    fd.shape = new box2d.b2PolygonShape();
+    fd.shape.SetAsBox(this.w / (scaleFactor * 2), this.h / (scaleFactor * 2));
+    this.body = world.CreateBody(bd).CreateFixture(fd);
+  }
+
+  display() {
+    push();
+    fill(colorWhite);
+    noStroke();
+    rectMode(CENTER);
+    rect(this.x, this.y, this.w, this.h);
+    pop();
   }
 }
