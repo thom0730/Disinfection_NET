@@ -38,10 +38,13 @@ let results = [];
 
 let world;
 
-let margin = 300;
+let margin = 80;
 let offset = 100;
-let tSize = 40;
+let tSize;
 var startYpos = margin;
+var endPoint = 13;
+var speed = 1;
+var lineSpacing = 1.9;
 
 let bottomObject;
 
@@ -49,6 +52,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
   textFont('monospace');
+  tSize = 45*windowWidth/1440;
   world = createWorld();
 
   bottomObject = new BottomObject(windowWidth/2, windowHeight-10, windowWidth, 10);
@@ -101,7 +105,8 @@ function setup() {
 }
 
 function draw() {
-  background(248,246,249); // パターン1
+  background(255); // パターン1
+  //background(248,246,249); // パターン1
   //background(28,29,24); // パターン1
   textSize(tSize);
 
@@ -116,27 +121,27 @@ function draw() {
 
   if (charObjects) {
     for(let i = 0; i < charObjects.length; i++) {
-  		//culclate offset
-  		let offseti = offset + i*2 -(frameCount-startCount);
-  		if (offseti > offset) {
+      //culclate offset
+      let offseti = offset + i*speed -(frameCount-startCount);
+      if (offseti > offset) {
         break;
-  		}
+      }
 
       let charObject = charObjects[i];
       charObject.validatePhysics();
       charObject.setBasePosition(drawPos.x, drawPos.y);
       charObject.display();
 
-  		drawPos.x += textWidth(charObject.char);
-  		if(drawPos.x > width-margin) {
-        let downYsize = tSize*1.5;
-  			drawPos.x = margin;
-  			drawPos.y += downYsize;
-        if (drawPos.y >= windowHeight - tSize* 7) {
+      drawPos.x += textWidth(charObject.char);
+      if(drawPos.x > width-margin) {
+        let downYsize = tSize*lineSpacing;
+        drawPos.x = margin;
+        drawPos.y += downYsize;
+        if (drawPos.y >= windowHeight - tSize* endPoint) {
           startYpos -= downYsize;
         }
-  		}
-  	}
+      }
+    }
   };
 }
 
@@ -252,8 +257,9 @@ class CharObject {
 
         // 固定テキストの背景の黒塗り
         push();
-        fill(colorBlack);
-        rect(this.x, this.y-tSize, textWidth(this.char), tSize);
+        fill(colorWhite);
+        noStroke();
+        //rect(this.x, this.y-tSize, textWidth(this.char), tSize);
         pop();
 
         // 落ちるテキスト
@@ -308,4 +314,8 @@ class BottomObject {
     rect(this.x, this.y, this.w, this.h);
     pop();
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
