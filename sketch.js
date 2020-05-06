@@ -63,7 +63,7 @@ function setup() {
     let params = {
       q: covid19LocalizedName[i],
       result_type: 'recent',
-      count: 1
+      count: 100
     };
 
     codeBird.__call('search_tweets', params, (result) => {
@@ -125,7 +125,7 @@ function draw() {
         let downYsize = tSize*1.5;
   			drawPos.x = margin;
   			drawPos.y += downYsize;
-        if (drawPos.y >= windowHeight) {
+        if (drawPos.y >= windowHeight - tSize* 7) {
           startYpos -= downYsize;
         }
   		}
@@ -250,8 +250,6 @@ class CharObject {
         push();
         rotate(a);
         fill(colorBlack);
-        // stroke(200);
-        // strokeWeight(2);
         rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
         fill(colorWhite);
         text(this.char, pos.x, pos.y);
