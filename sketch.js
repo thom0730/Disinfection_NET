@@ -34,8 +34,9 @@ let coronaWord = [
 
 var charObjects = [];
 let startCount;
-
 let results = [];
+
+let world;
 
 let margin = 300;
 let offset = 100;
@@ -44,8 +45,9 @@ var startYpos = margin;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  frameRate(60);//25
+  frameRate(30);
   textFont('monospace');
+  world = createWorld(new box2d.b2Vec2(0, 0));
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
@@ -61,7 +63,7 @@ function setup() {
     let params = {
       q: covid19LocalizedName[i],
       result_type: 'recent',
-      count: 100
+      count: 1
     };
 
     codeBird.__call('search_tweets', params, (result) => {
@@ -89,6 +91,10 @@ function setup() {
           addCharObject(item);
         });
         checkAllCoronaWords();
+        charObjects.forEach((item, i) => {
+          item.setupBody();
+        });
+
       }
     });
   }
@@ -99,6 +105,11 @@ function draw() {
   //background(28,29,24); // パターン1
   textSize(tSize);
   let drawPos = createVector(margin,startYpos);
+
+  // We must always step through time!
+  let timeStep = 1.0 / 20;
+  // 2nd and 3rd arguments are velocity and position iterations
+  world.Step(timeStep, 10, 10);
 
   if (charObjects) {
     for(let i = 0; i < charObjects.length; i++) {
@@ -116,7 +127,6 @@ function draw() {
       charObject.setBasePosition(drawPos.x, drawPos.y);
 
   		//draw char
-
       if (charObject.isCoronaWord) {
         fill(colorWhite);
       } else {
@@ -124,7 +134,9 @@ function draw() {
         fill(colorBlack); //パターン1
       }
 
-  		text(charObject.char,charObject.x,charObject.y);
+      charObject.display();
+
+      text(charObject.char,charObject.x,charObject.y);
   		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*1.5;
@@ -186,5 +198,54 @@ class CharObject {
   setBasePosition(x, y) {
     this.x = x;
     this.y = y;
+  }
+
+  setupBody() {
+    if (this.isCoronaWord) {
+      // Define a body
+      let bd = new box2d.b2BodyDef();
+      bd.type = box2d.b2BodyType.b2_dynamicBody;
+      bd.position = scaleToWorld(100, 100);
+
+      // Define a fixture
+      let fd = new box2d.b2FixtureDef();
+      // Fixture holds shape
+      fd.shape = new box2d.b2PolygonShape();
+      fd.shape.SetAsBox(scaleToWorld(textWidth(this.char) / 2), scaleToWorld(tSize / 2));
+
+      // Some physics
+      fd.density = 1.0;
+      fd.friction = 0.5;
+      fd.restitution = 0.2;
+
+      // Create the body
+      this.body = world.CreateBody(bd);
+      // Attach the fixture
+      this.body.CreateFixture(fd);
+    }
+  }
+
+  // updatePosition() {
+  //   this.body.position =
+  // }
+
+  display() {
+    if (this.isCoronaWord) {
+      // Get the body's position
+      let pos = scaleToPixels(this.body.GetPosition());
+      // Get its angle of rotation
+      let a = this.body.GetAngleRadians();
+
+      // Draw it!
+      push();
+      rotate(a);
+      fill(colorBlack);
+      stroke(200);
+      strokeWeight(2);
+      rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
+      fill(colorWhite);
+      text(this.char, pos.x, pos.y);
+      pop();
+    }
   }
 }
