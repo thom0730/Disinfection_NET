@@ -45,13 +45,13 @@ let tSize;
 var startYpos = margin;
 var endPoint = 13;
 var speed = 1;
-var lineSpacing = 1.9;
+var lineSpacing = 1.4;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   frameRate(30);
   textFont('monospace');
-  tSize = 45*windowWidth/1440;
+  tSize = 50*windowWidth/1440;
   world = createWorld();
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
@@ -134,7 +134,7 @@ function draw() {
         let downYsize = tSize*lineSpacing;
         drawPos.x = margin;
         drawPos.y += downYsize;
-        if (drawPos.y >= windowHeight - tSize* endPoint) {
+        if (drawPos.y >= 2*windowHeight/3) {
           startYpos -= downYsize;
         }
       }
@@ -144,7 +144,7 @@ function draw() {
     push();
     rectMode(CENTER);
     noFill();
-    translate (windowWidth/2, windowWidth/2);
+    translate (windowWidth/2, windowHeight/2);
     stroke(colorBlack);
     rotate(frameCount * 0.03);
     rect(0, 0, rectSize, rectSize);
@@ -281,8 +281,6 @@ class CharObject {
         push();
         rotate(a);
         fill(colorBlack);
-        rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
-        fill(colorWhite);
         text(this.char, pos.x, pos.y);
         pop();
       } else {
