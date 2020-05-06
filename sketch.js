@@ -34,8 +34,9 @@ let coronaWord = [
 
 var charObjects = [];
 let startCount;
-
 let results = [];
+
+let world;
 
 let margin = 300;
 let offset = 100;
@@ -44,8 +45,9 @@ var startYpos = margin;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  frameRate(60);//25
+  frameRate(30);
   textFont('monospace');
+  world = createWorld(new box2d.b2Vec2(0, 0));
 
   codeBird.setConsumerKey(consumerKey, consumerSecret);
   codeBird.setToken(accessToken, accessTokenSecret);
@@ -100,6 +102,11 @@ function draw() {
   textSize(tSize);
   let drawPos = createVector(margin,startYpos);
 
+  // We must always step through time!
+  let timeStep = 1.0 / 20;
+  // 2nd and 3rd arguments are velocity and position iterations
+  world.Step(timeStep, 10, 10);
+
   if (charObjects) {
     for(let i = 0; i < charObjects.length; i++) {
   		//culclate offset
@@ -109,28 +116,16 @@ function draw() {
   		}
 
       let charObject = charObjects[i];
-      if (charObject.isCoronaWord) {
-        fill(colorBlack); //パターン1
-        rect(drawPos.x, drawPos.y-tSize, textWidth(charObject.char), tSize);
-      }
+      charObject.validatePhysics();
       charObject.setBasePosition(drawPos.x, drawPos.y);
+      charObject.display();
 
-  		//draw char
-
-      if (charObject.isCoronaWord) {
-        fill(colorWhite);
-      } else {
-        //パターン2 '#C0B3A2';
-        fill(colorBlack); //パターン1
-      }
-
-  		text(charObject.char,charObject.x,charObject.y);
   		drawPos.x += textWidth(charObject.char);
   		if(drawPos.x > width-margin) {
         let downYsize = tSize*1.5;
   			drawPos.x = margin;
   			drawPos.y += downYsize;
-        if (drawPos.y >= windowHeight) {
+        if (drawPos.y >= windowHeight - tSize* 7) {
           startYpos -= downYsize;
         }
   		}
@@ -174,9 +169,21 @@ function checkAllCoronaWords() {
   }
 }
 
+function validatePhysicsObject(charObject) {
+  if (!charObject.checkedToNeedBody) {
+    if ( 0.0 < charObject.x && charObject.x < windowWidth && 0.0 < charObject.y && charObject.y < windowHeight ) {
+      charObject.setupBody();
+    } else if (charObject.body) {
+      world.DestroyBody(charObject.body);
+    }
+  }
+}
+
 class CharObject {
   setChar(char){
     this.char = char;
+    this.checkedToNeedBody = false;
+    this.isDisplay = false;
   }
 
   setIsCoronaWord(isCoronaWord) {
@@ -186,5 +193,73 @@ class CharObject {
   setBasePosition(x, y) {
     this.x = x;
     this.y = y;
+  }
+
+  validatePhysics() {
+    if (!this.checkedToNeedBody) {
+      if ( 0.0 < this.x && this.x < windowWidth && 0.0 < this.y && this.y < windowHeight ) {
+        this.isDisplay = true;
+        this.setupBody();
+      } else if (this.body) {
+        this.isDisplay = false;
+        world.DestroyBody(this.body);
+      }
+    }
+  }
+
+  setupBody() {
+    if (this.isCoronaWord) {
+      // Define a body
+      let bd = new box2d.b2BodyDef();
+      bd.type = box2d.b2BodyType.b2_dynamicBody;
+      bd.position = scaleToWorld(this.x, this.y);
+
+      // Define a fixture
+      let fd = new box2d.b2FixtureDef();
+      // Fixture holds shape
+      fd.shape = new box2d.b2PolygonShape();
+      fd.shape.SetAsBox(scaleToWorld(textWidth(this.char) / 2), scaleToWorld(tSize / 2));
+
+      // Some physics
+      fd.density = 1.0;
+      fd.friction = 0.5;
+      fd.restitution = 0.2;
+
+      // Create the body
+      this.body = world.CreateBody(bd);
+      // Attach the fixture
+      this.body.CreateFixture(fd);
+    }
+    this.checkedToNeedBody = true;
+  }
+
+  display() {
+    if (this.isDisplay) {
+      if (this.isCoronaWord && this.body) {
+
+        // 固定テキストの背景の黒塗り
+        push();
+        fill(colorBlack);
+        rect(this.x, this.y-tSize, textWidth(this.char), tSize);
+        pop();
+
+        // 落ちるテキスト
+        let pos = scaleToPixels(this.body.GetPosition());
+        let a = this.body.GetAngleRadians();
+
+        push();
+        rotate(a);
+        fill(colorBlack);
+        rect(pos.x, pos.y-tSize, textWidth(this.char), tSize);
+        fill(colorWhite);
+        text(this.char, pos.x, pos.y);
+        pop();
+      } else {
+        push();
+        fill(colorBlack);
+        text(this.char, this.x, this.y);
+        pop();
+      }
+    }
   }
 }
